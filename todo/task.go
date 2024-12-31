@@ -28,7 +28,9 @@ var csvHeader = []string{"ID", "Description", "CreatedAt", "IsComplete"}
 func (t *Tasks) Add() {
 	var f *os.File
 	var err error
-	if !util.FileExists(FILENAME) {
+
+	fmt.Println(util.FileExists(FILENAME))
+	if util.FileExists(FILENAME) {
 		f, err = util.LoadFile(FILENAME)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
