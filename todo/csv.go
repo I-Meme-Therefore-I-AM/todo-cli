@@ -16,7 +16,9 @@ func getLastIndex(f *os.File) (int, error) {
 	}
 
 	lenData := len(data)
-	// lenData++
+	if lenData == 0 {
+		lenData = 1
+	}
 	return lenData, nil
 }
 func writeToCsv(f *os.File, data []string) error {
