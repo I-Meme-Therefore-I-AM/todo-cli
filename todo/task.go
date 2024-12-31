@@ -34,7 +34,7 @@ func (t *Tasks) Add() {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		defer f.Close()
+		defer util.Close(f)
 		err = writeToCsv(f, csvHeader)
 
 		if err != nil {

@@ -46,7 +46,7 @@ func appendToCsv(f *os.File, t Tasks) error {
 	t.CreatedAt = time.Now()
 	t.IsComplete = false
 
-	data := []string{strconv.Itoa(t.ID), t.Description, t.CreatedAt.String(), strconv.FormatBool(t.IsComplete)}
+	data := []string{strconv.Itoa(t.ID), t.Description, t.CreatedAt.Format("2006-01-02T15:04:05"), strconv.FormatBool(t.IsComplete)}
 	err = wCsv.Write(data)
 
 	if err != nil {
