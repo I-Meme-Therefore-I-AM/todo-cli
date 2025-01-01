@@ -23,7 +23,7 @@ var taskCommand = &cobra.Command{
 }
 
 func Execute() {
-	taskCommand.AddCommand(create)
+	taskCommand.AddCommand(create, listTask)
 	if err := taskCommand.Execute(); err != nil {
 		fmt.Println(err)
 		return

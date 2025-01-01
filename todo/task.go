@@ -56,6 +56,12 @@ func (t *Tasks) Add() {
 	}
 }
 
-func (t *Tasks) List() {
+func List(all bool) {
 	// list tasks
+	f, err := util.LoadFile(FILENAME)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+
+	readTask(f, all)
 }

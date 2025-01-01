@@ -2,9 +2,12 @@ package todo
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
-	"strconv"
+	"text/tabwriter"
 	"time"
+
+	"github.com/mergestat/timediff"
 )
 
 func getLastIndex(f *os.File) (int, error) {
@@ -46,7 +49,7 @@ func appendToCsv(f *os.File, t Tasks) error {
 	t.CreatedAt = time.Now()
 	t.IsComplete = false
 
-	data := []string{strconv.Itoa(t.ID), t.Description, t.CreatedAt.Format("2006-01-02T15:04:05"), strconv.FormatBool(t.IsComplete)}
+	data := unmarshTasks(&t)
 	err = wCsv.Write(data)
 
 	if err != nil {
@@ -54,4 +57,36 @@ func appendToCsv(f *os.File, t Tasks) error {
 	}
 	wCsv.Flush()
 	return nil
+}
+
+// read csv task
+func readTask(f *os.File, all bool) {
+	rCsv := csv.NewReader(f)
+
+	r, err := rCsv.ReadAll()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	wr := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
+	fmt.Fprintln(wr, "ID\tDescription\tCreatedAt")
+	for index, fr := range r {
+		if index == 0 {
+			continue
+		}
+		d, err := marshTasks(fr)
+
+		if err != nil {
+			fmt.Fprintln(os.Stdout, err)
+		}
+		if d.IsComplete == true && all != true {
+			fmt.Fprintf(wr, "%d\t%s\t%s\n", d.ID, d.Description, d.CreatedAt)
+		} else if d.IsComplete != true && all != true {
+			continue
+		} else {
+			fmt.Fprintf(wr, "%d\t%s\t%s\t%v\n", d.ID, d.Description,
+				timediff.TimeDiff(d.CreatedAt),
+				d.IsComplete)
+		}
+	}
+	wr.Flush()
 }
