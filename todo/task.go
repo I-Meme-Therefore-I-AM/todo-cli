@@ -62,6 +62,6 @@ func List(all bool) {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
-
 	readTask(f, all)
+	defer util.Close(f)
 }
